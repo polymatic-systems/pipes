@@ -1,0 +1,43 @@
+# https://www.telepresence.io/reference/connecting.html#cluster-permissions
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: k8s-debugger
+rules:
+- apiGroups: [""]
+  resources: ["services"]
+  verbs: ["list", "create", "delete"]
+- apiGroups: ["", "apps", "extensions"]
+  resources: ["deployments"]
+  verbs: ["list", "create", "get", "update", "delete"]
+- apiGroups: ["", "apps", "extensions"]
+  resources: ["deployments/scale"]
+  verbs: ["get", "update"]
+- apiGroups: ["", "apps", "extensions"]
+  resources: ["replicasets"]
+  verbs: ["list", "get", "update", "delete"]
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["list", "get"]
+- apiGroups: [""]
+  resources: ["pods/log"]
+  verbs: ["get"]
+- apiGroups: [""]
+  resources: ["pods/portforward"]
+  verbs: ["create"]
+- apiGroups: [""]
+  resources: ["pods/exec"]
+  verbs: ["create"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: k8s-debugger
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: k8s-debugger
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  name: k8s-debugger
